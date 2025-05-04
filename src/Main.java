@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        int LIMIT_USERS = 1;
+        final int MAX_USERS = 1;
         boolean WORKING = true;
 
         Scanner scanner = new Scanner(System.in);
@@ -15,8 +15,8 @@ public class Main {
             System.out.printf("-".repeat(50) + "%n");
 
             int NumbersOfUsers = users.size();
-            System.out.println("Sistema de cadrasto simples - Vagas disponiveis: " + (LIMIT_USERS - NumbersOfUsers));
-            if(NumbersOfUsers < LIMIT_USERS ) {
+            System.out.println("Sistema de cadrasto simples - Vagas disponiveis: " + (MAX_USERS - NumbersOfUsers));
+            if(NumbersOfUsers < MAX_USERS ) {
                 System.out.println("1 - Adicionar usuario.");
             } else {
                 System.out.println("1 - Adicionar usuario. (LOTADO)");
@@ -31,30 +31,67 @@ public class Main {
 
             switch(option){
                 case 1:
-                    if (NumbersOfUsers == LIMIT_USERS) {
+                    if (NumbersOfUsers == MAX_USERS) {
                         System.out.println("Não é possivel adicionar mais nenhum usuario");
                         continue;
                     }
+                    String name;
+                    int age = 0;
+                    String job = "";
+                    double salary;
+
                     User TempUserInformation = new User();
 
                     System.out.print("Digite o nome: ");
-                    String name = scanner.next();
+                    try {
+                        name = scanner.next();
+                    } catch (Exception e){
+                        System.out.println("Nome invalido");
+                        scanner.next();
+                        continue;
+                    }
                     TempUserInformation.setName(name);
 
                     System.out.print("Digite a idade: ");
-                    int age = scanner.nextInt();
+                    try {
+                        age = scanner.nextInt();
+                    } catch (InputMismatchException e) {
+                        System.out.println("Idade invalida");
+                        scanner.next();
+                        continue;
+                    } catch (Exception e ) {
+                        System.out.println(e.getMessage());
+                    }
+
                     TempUserInformation.setAge(age);
 
                     // Ele é do Job xD
                     System.out.print("Digite o trabalho: ");
-                    String job = scanner.next();
+
+                    try {
+                        job = scanner.next();
+                    } catch (InputMismatchException e) {
+                        System.out.println("Trabalho invalido");
+                        scanner.next();
+                        continue;
+                    } catch (Exception e ) {
+                        System.out.println(e.getMessage());
+                    }
+
                     TempUserInformation.setJob(job);
 
                     // Fiz esse replace, por que dependendo da
                     // localidade o java da erro se o numero é com . ou ,;
                     System.out.print("Digite o salario: ");
-                    String salaryInString = scanner.next();
-                    double salary = Double.parseDouble(salaryInString.replace(",","."));
+                    try {
+                        String salaryInString = scanner.next();
+                        salary = Double.parseDouble(salaryInString.replace(",","."));
+                    } catch (NumberFormatException e) {
+                        System.out.println("Salario invalido!");
+                        scanner.next();
+                        continue;
+                    }
+
                     TempUserInformation.setSalary(salary);
 
                     users.add(TempUserInformation);
