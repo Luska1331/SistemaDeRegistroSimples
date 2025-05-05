@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        final int MAX_USERS = 1;
+        final int MAX_USERS = 5;
         boolean WORKING = true;
 
         Scanner scanner = new Scanner(System.in);
@@ -26,7 +26,14 @@ public class Main {
             System.out.println("4 - Sair");
             System.out.print("Escolha: ");
 
-            int option = scanner.nextInt();
+            int option;
+            try {
+                option = scanner.nextInt();
+            } catch (Exception e) {
+                System.out.println("Opção invalida, tente novamente");
+                scanner.next();
+                continue;
+            }
 
 
             switch(option){
@@ -111,11 +118,37 @@ public class Main {
 
                     }
                     continue;
+                case 3:
+                    if (NumbersOfUsers == 0 ) {
+                        System.out.println("Nenhum usuario detectado!");
+                        continue;
+                    }
+                    System.out.println("Lista de usuarios:");
+                    for (int i = 0; i < NumbersOfUsers; i++) {
+                        User TempUser = users.get(i);
+                        System.out.printf("%d. %s%n",i, TempUser.getName());
+                        System.out.println("-".repeat(50));
+                    }
+
+                    try {
+                        int optionDelPerson = scanner.nextInt();
+                        if (NumbersOfUsers < optionDelPerson) {
+                            System.out.println("Usuario inexistente.");
+                        } else {
+                            System.out.println(users.get(optionDelPerson).getName() + " foi deletado!");
+                            users.remove(optionDelPerson);
+                        }
+                        continue;
+                    } catch (InputMismatchException e) {
+                        System.out.println("Use apenas numeros!");
+                    }
                 case 4:
                     System.out.println("Saindo...");
                     WORKING = false;
-                default:
                     continue;
+                default:
+                    System.out.println("Opção invalida. Por favor insira a opção correta!");
+                    break;
 
 
             }
