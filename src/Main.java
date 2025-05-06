@@ -4,101 +4,60 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        final int MAX_USERS = 5;
-        boolean WORKING = true;
+        final int MAX_USERS = 5; // Obrigatório;
+        boolean WORKING = true; // Opcional / Basicamente inutil.
 
-        Scanner scanner = new Scanner(System.in);
+        InputHandler input = new InputHandler();
         ArrayList<User> users = new ArrayList<>();
+
 
         do {
 
-            System.out.printf("-".repeat(50) + "%n");
+            System.out.printf("-".repeat(50) + "%n"); // Embelezamento opcional, mas é bom xD
 
+            // Para salvamento de acessos na função, preferi salvar o número
+            // em uma unica variavel, visto que o resto não muda esse valor.
             int NumbersOfUsers = users.size();
-            System.out.println("Sistema de cadrasto simples - Vagas disponiveis: " + (MAX_USERS - NumbersOfUsers));
+
+
+            System.out.println("Sistema de cadastro simples - Vagas disponíveis: " + (MAX_USERS - NumbersOfUsers));
+
+            // Deve haver algum meio mais bonito de fazer isso e o menu em si.
             if(NumbersOfUsers < MAX_USERS ) {
-                System.out.println("1 - Adicionar usuario.");
+                System.out.println("1 - Adicionar usuário.");
             } else {
-                System.out.println("1 - Adicionar usuario. (LOTADO)");
+                System.out.println("1 - Adicionar usuário. (LOTADO)");
             }
-            System.out.println("2 - Ver usuarios.");
-            System.out.println("3 - Excluir usuarios.");
+
+            System.out.println("2 - Ver usuários.");
+            System.out.println("3 - Excluir usuários.");
             System.out.println("4 - Sair");
-            System.out.print("Escolha: ");
 
-            int option;
-            try {
-                option = scanner.nextInt();
-            } catch (Exception e) {
-                System.out.println("Opção invalida, tente novamente");
-                scanner.next();
-                continue;
-            }
+            // NOTE: Quero mudar tudo nessa parte, fazendo metodos separados,
+            // mas sem deixar o código ilegível.
 
+            int option = input.getInput("Escolha: ", Integer.class);
 
             switch(option){
                 case 1:
                     if (NumbersOfUsers == MAX_USERS) {
-                        System.out.println("Não é possivel adicionar mais nenhum usuario");
+                        System.out.println("Não é possível adicionar mais nenhum usuário");
                         continue;
                     }
-                    String name;
-                    int age = 0;
-                    String job = "";
-                    double salary;
 
                     User TempUserInformation = new User();
 
-                    System.out.print("Digite o nome: ");
-                    try {
-                        name = scanner.next();
-                    } catch (Exception e){
-                        System.out.println("Nome invalido");
-                        scanner.next();
-                        continue;
-                    }
+
+                    String name = input.getInput("Digite o nome: ", String.class);
                     TempUserInformation.setName(name);
 
-                    System.out.print("Digite a idade: ");
-                    try {
-                        age = scanner.nextInt();
-                    } catch (InputMismatchException e) {
-                        System.out.println("Idade invalida");
-                        scanner.next();
-                        continue;
-                    } catch (Exception e ) {
-                        System.out.println(e.getMessage());
-                    }
-
+                    int age = input.getInput("Digite a idade: ", Integer.class);
                     TempUserInformation.setAge(age);
 
-                    // Ele é do Job xD
-                    System.out.print("Digite o trabalho: ");
-
-                    try {
-                        job = scanner.next();
-                    } catch (InputMismatchException e) {
-                        System.out.println("Trabalho invalido");
-                        scanner.next();
-                        continue;
-                    } catch (Exception e ) {
-                        System.out.println(e.getMessage());
-                    }
-
+                    String job = input.getInput("Digite o trabalho: ", String.class);
                     TempUserInformation.setJob(job);
 
-                    // Fiz esse replace, por que dependendo da
-                    // localidade o java da erro se o numero é com . ou ,;
-                    System.out.print("Digite o salario: ");
-                    try {
-                        String salaryInString = scanner.next();
-                        salary = Double.parseDouble(salaryInString.replace(",","."));
-                    } catch (NumberFormatException e) {
-                        System.out.println("Salario invalido!");
-                        scanner.next();
-                        continue;
-                    }
-
+                    double salary = input.getInput("Digite o salario: ", Double.class);
                     TempUserInformation.setSalary(salary);
 
                     users.add(TempUserInformation);
@@ -109,21 +68,17 @@ public class Main {
                 case 2:
                     System.out.printf("-".repeat(50) + "%n");
                     System.out.printf("Total de %d cadastrados!%n", NumbersOfUsers);
-                    for (User TempUser : users) {
-                        System.out.printf("-".repeat(50) + "%n");
-                        System.out.println("Nome: " + TempUser.getName());
-                        System.out.println("Idade: " + TempUser.getAge());
-                        System.out.println("Trabalho: " + TempUser.getJob());
-                        System.out.println("Salario: " + TempUser.getSalary());
-
+                    for (User tempUser : users) {
+                        UserManager tempUserManager = new UserManager();
+                        System.out.println(tempUserManager.formatMessageOutput(tempUser));
                     }
                     continue;
                 case 3:
                     if (NumbersOfUsers == 0 ) {
-                        System.out.println("Nenhum usuario detectado!");
+                        System.out.println("Nenhum usuário detectado!");
                         continue;
                     }
-                    System.out.println("Lista de usuarios:");
+                    System.out.println("Lista de usuários:");
                     for (int i = 0; i < NumbersOfUsers; i++) {
                         User TempUser = users.get(i);
                         System.out.printf("%d. %s%n",i, TempUser.getName());
@@ -131,9 +86,9 @@ public class Main {
                     }
 
                     try {
-                        int optionDelPerson = scanner.nextInt();
+                        int optionDelPerson = input.getInput("Quem você deseja apagar? ", Integer.class);
                         if (NumbersOfUsers < optionDelPerson) {
-                            System.out.println("Usuario inexistente.");
+                            System.out.println("Usuário inexistente.");
                         } else {
                             System.out.println(users.get(optionDelPerson).getName() + " foi deletado!");
                             users.remove(optionDelPerson);
@@ -157,6 +112,8 @@ public class Main {
     }
 }
 
+
+// Essa provavelmente foi a parte mais "bonita" do código, pelo gerenciamento.
 class User {
     private String name;
     private int age;
@@ -189,5 +146,50 @@ class User {
     }
     double getSalary() {
         return this.salary;
+    }
+}
+
+class UserManager {
+    /* Função para retornar a mensagem de output das informações do usuário.*/
+    String formatMessageOutput(User user) {
+    return  String.format("Nome: %s%n", user.getName()) +
+            String.format("Idade: %d%n", user.getAge()) +
+            String.format("Trabalho: %s%n", user.getJob()) +
+            String.format("Salario: %.2f%n", user.getSalary());
+    }
+
+}
+
+
+class InputHandler {
+    private final Scanner scanner;
+
+    public InputHandler() {
+        this.scanner = new Scanner(System.in);
+    }
+
+
+    public <T> T getInput(String prompt, Class<T> type) {
+        System.out.print(prompt);
+        while (true) {
+            try {
+                String input = scanner.nextLine().trim();
+
+                if (type == Integer.class) {
+                    return type.cast(Integer.parseInt(input));
+                } else if (type == Double.class) {
+                    return type.cast(Double.parseDouble(input.replace(",", ".")));
+                } else if (type == String.class) {
+                    return type.cast(input);
+                } else {
+                    throw new IllegalArgumentException("Tipo não suportado!");
+                }
+            } catch (Exception e) {
+                System.out.println("Entrada invalida, tente novamente");
+            }
+
+
+
+        }
     }
 }
