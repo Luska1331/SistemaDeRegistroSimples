@@ -5,42 +5,26 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         final int MAX_USERS = 5; // Obrigatório;
-        boolean WORKING = true; // Opcional / Basicamente inutil.
 
         InputHandler input = new InputHandler();
         ArrayList<User> users = new ArrayList<>();
 
+        while (true){
+            final String MENU_MESSAGE = " 1 - Adicionar usuário.%n" +
+                                        " 2 - Ver usuários.%n" +
+                                        " 3 - Excluir usuário.%n" +
+                                        " 4 - Sair%n";
 
-        do {
-
-            System.out.printf("-".repeat(50) + "%n"); // Embelezamento opcional, mas é bom xD
-
-            // Para salvamento de acessos na função, preferi salvar o número
-            // em uma unica variavel, visto que o resto não muda esse valor.
-            int NumbersOfUsers = users.size();
-
-
-            System.out.println("Sistema de cadastro simples - Vagas disponíveis: " + (MAX_USERS - NumbersOfUsers));
-
-            // Deve haver algum meio mais bonito de fazer isso e o menu em si.
-            if(NumbersOfUsers < MAX_USERS ) {
-                System.out.println("1 - Adicionar usuário.");
-            } else {
-                System.out.println("1 - Adicionar usuário. (LOTADO)");
-            }
-
-            System.out.println("2 - Ver usuários.");
-            System.out.println("3 - Excluir usuários.");
-            System.out.println("4 - Sair");
-
-            // NOTE: Quero mudar tudo nessa parte, fazendo metodos separados,
-            // mas sem deixar o código ilegível.
+            int numbersOfUsers = users.size();
+            
+            System.out.println("Sistema de cadastro simples - Vagas disponíveis: " + (MAX_USERS - numbersOfUsers));
+            System.out.printf(MENU_MESSAGE);
 
             int option = input.getInput("Escolha: ", Integer.class);
 
             switch(option){
                 case 1:
-                    if (NumbersOfUsers == MAX_USERS) {
+                    if (numbersOfUsers == MAX_USERS) {
                         System.out.println("Não é possível adicionar mais nenhum usuário");
                         continue;
                     }
@@ -66,20 +50,19 @@ public class Main {
 
                     continue;
                 case 2:
-                    System.out.printf("-".repeat(50) + "%n");
-                    System.out.printf("Total de %d cadastrados!%n", NumbersOfUsers);
+                    System.out.printf("Total de %d cadastrados!%n", numbersOfUsers);
                     for (User tempUser : users) {
                         UserManager tempUserManager = new UserManager();
                         System.out.println(tempUserManager.formatMessageOutput(tempUser));
                     }
                     continue;
                 case 3:
-                    if (NumbersOfUsers == 0 ) {
+                    if (numbersOfUsers == 0 ) {
                         System.out.println("Nenhum usuário detectado!");
                         continue;
                     }
                     System.out.println("Lista de usuários:");
-                    for (int i = 0; i < NumbersOfUsers; i++) {
+                    for (int i = 0; i < numbersOfUsers; i++) {
                         User TempUser = users.get(i);
                         System.out.printf("%d. %s%n",i, TempUser.getName());
                         System.out.println("-".repeat(50));
@@ -87,11 +70,22 @@ public class Main {
 
                     try {
                         int optionDelPerson = input.getInput("Quem você deseja apagar? ", Integer.class);
-                        if (NumbersOfUsers < optionDelPerson) {
+                        if (numbersOfUsers < optionDelPerson) {
                             System.out.println("Usuário inexistente.");
                         } else {
-                            System.out.println(users.get(optionDelPerson).getName() + " foi deletado!");
-                            users.remove(optionDelPerson);
+                            while (true) {
+                                int deleteConfirmation = input.getInput("Deseja deletar? (1 - Sim, 2 - Não) ", Integer.class);
+                                if (deleteConfirmation == 1) {
+                                    System.out.println(users.get(optionDelPerson).getName() + " foi deletado!");
+                                    users.remove(optionDelPerson);
+                                } else if (deleteConfirmation == 2) {
+                                    System.out.println("Operação cancelada.");
+                                } else {
+                                    System.out.println("Resposta invalida, tente novamente!");
+                                    continue;
+                                }
+                                break;
+                            }
                         }
                         continue;
                     } catch (InputMismatchException e) {
@@ -99,15 +93,15 @@ public class Main {
                     }
                 case 4:
                     System.out.println("Saindo...");
-                    WORKING = false;
-                    continue;
+                    break;
                 default:
                     System.out.println("Opção invalida. Por favor insira a opção correta!");
                     break;
 
 
             }
-        } while (WORKING);
+            return;
+        }
 
     }
 }
