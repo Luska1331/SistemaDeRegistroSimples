@@ -178,7 +178,7 @@ class InputHandler {
                 } else {
                     throw new IllegalArgumentException("Tipo não suportado!");
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException | InputMismatchException e) {
                 System.out.println("Entrada invalida, tente novamente");
             }
 
